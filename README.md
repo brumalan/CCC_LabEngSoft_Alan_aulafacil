@@ -1,95 +1,243 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/NOiI5yDS)
-# Template de Projeto Fullstack com Spring Boot e Next.js
+# Sistema de Agendamento de Aulas
 
-Este projeto representa um template para o desenvolvimento de aplicações web fullstack modernas utilizando **Spring Boot** no backend e **Next.js** no frontend. Ele foi criado como base para aplicações que utilizam boas práticas de engenharia de software, escalabilidade e integração entre Java e TypeScript.
+Um sistema completo para agendamento de aulas particulares, desenvolvido com Spring Boot no backend e Next.js no frontend. O sistema permite que alunos agendem aulas com professores, com recursos de notificações em tempo real, autenticação segura e interface moderna.
 
-## **Visão Geral**
+## 🚀 Funcionalidades Principais
 
-A aplicação é dividida em dois componentes principais:
+### Para Alunos
+- **Cadastro e Login**: Sistema de autenticação com JWT
+- **Busca de Professores**: Visualização de professores disponíveis com informações sobre matérias e valores
+- **Agendamento de Aulas**: Interface intuitiva para agendar aulas presenciais ou online
+- **Gerenciamento de Aulas**: Visualização e cancelamento de aulas agendadas
+- **Notificações**: Recebimento de notificações sobre confirmações e cancelamentos
+- **Dashboard Personalizado**: Resumo de aulas e informações importantes
 
-1. **Backend (API RESTful)**:
-    - Construído com **Spring Boot**, um framework amplamente utilizado na comunidade Java para o desenvolvimento de aplicações robustas e performáticas.
-    - Implementa uma arquitetura RESTful para expor endpoints que servirão como interface de comunicação com o frontend.
-    - Inclui configurações para persistência de dados, segurança, e boas práticas de design de API.
+### Para Professores
+- **Perfil Profissional**: Configuração de matérias, valores por hora e disponibilidade
+- **Gerenciamento de Aulas**: Visualização de todas as aulas agendadas pelos alunos
+- **Sistema de Notificações**: Notificações instantâneas sobre novos agendamentos
+- **Controle de Disponibilidade**: Possibilidade de alterar status de disponibilidade
 
-2. **Frontend (Interface de Usuário)**:
-    - Desenvolvido em **Next.js**, um framework React para renderização híbrida (client-side e server-side) de aplicações web.
-    - Integra totalmente com o backend, consumindo as APIs REST disponibilizadas pelo Spring Boot.
-    - Utiliza **Tailwind CSS** como ferramenta para estilização baseada em classes utilitárias.
+### Recursos Técnicos
+- **Autenticação JWT**: Sistema seguro de autenticação e autorização
+- **Notificações em Tempo Real**: Sistema completo de notificações com contadores e marcação de lidas
+- **Interface Responsiva**: Design moderno com Tailwind CSS
+- **API RESTful**: Backend robusto com Spring Boot
+- **Validação de Dados**: Validação tanto no frontend quanto no backend
 
-O objetivo deste template é acelerar o desenvolvimento de aplicações fullstack modernas que priorizam desempenho, escalabilidade e experiência do usuário.
+## 🛠️ Tecnologias Utilizadas
 
-## **Estrutura do Projeto**
-Abaixo, você encontrará a organização geral dos arquivos do projeto:
-``` 
-root/
+### Backend
+- **Java 21**: Linguagem de programação principal
+- **Spring Boot**: Framework principal para desenvolvimento da API
+- **Spring Security**: Autenticação e autorização com JWT
+- **Spring Data JPA**: Persistência de dados com Hibernate
+- **H2/MySQL**: Sistema de banco de dados
+- **Gradle**: Gerenciamento de dependências
+
+### Frontend
+- **Next.js 14**: Framework React para desenvolvimento web
+- **TypeScript**: Linguagem de programação para maior segurança de tipos
+- **Tailwind CSS**: Framework CSS para estilização
+- **Lucide React**: Biblioteca de ícones
+- **React Hooks**: Gerenciamento de estado e efeitos
+
+## 📋 Estrutura do Projeto
+
+```
+sistema-agendamento-aulas/
 ├── backend/
 │   ├── src/
 │   │   ├── main/
-│   │   │   ├── java/          # Código fonte Java
-│   │   │   ├── resources/     # Arquivos de configuração (application.properties, etc.)
-│   │   ├── test/              # Testes automatizados para o backend
-│   └── pom.xml                # Configuração do Maven para dependências do backend
+│   │   │   ├── java/com/example/backend/
+│   │   │   │   ├── controller/         # Controllers da API REST
+│   │   │   │   │   ├── AulaController.java
+│   │   │   │   │   ├── UsuarioController.java
+│   │   │   │   │   ├── ProfessorController.java
+│   │   │   │   │   └── NotificacaoController.java
+│   │   │   │   ├── domain/             # Entidades JPA
+│   │   │   │   │   ├── Usuario.java
+│   │   │   │   │   ├── Professor.java
+│   │   │   │   │   ├── Aula.java
+│   │   │   │   │   └── Notificacao.java
+│   │   │   │   ├── repository/         # Repositórios JPA
+│   │   │   │   ├── service/            # Lógica de negócio
+│   │   │   │   ├── security/           # Configurações de segurança
+│   │   │   │   └── BackendApplication.java
+│   │   │   └── resources/
+│   │   │       └── application.properties
+│   │   └── test/                       # Testes automatizados
+│   └── build.gradle                    # Configuração do Gradle
 ├── frontend/
-│   ├── components/            # Componentes React reutilizáveis
-│   ├── pages/                 # Arquivos para rotas do Next.js
-│   ├── public/                # Arquivos estáticos (imagens, fontes, etc.)
-│   ├── styles/                # Estilos globais ou específicos
-│   ├── tailwind.config.js     # Configuração do Tailwind CSS
-│   └── package.json           # Configuração de dependências e scripts do frontend
-├── .gitignore                 # Arquivos e pastas ignorados pelo Git
-└── README.md                  # Documentação do projeto
+│   ├── src/
+│   │   ├── app/                        # Páginas do Next.js
+│   │   │   ├── dashboard/              # Dashboard principal
+│   │   │   ├── login/                  # Página de login
+│   │   │   ├── register/               # Página de cadastro
+│   │   │   ├── professores/            # Área dos professores
+│   │   │   └── aulas/                  # Gerenciamento de aulas
+│   │   ├── components/                 # Componentes React reutilizáveis
+│   │   │   ├── ProfileSection.tsx
+│   │   │   ├── AulaCard.tsx
+│   │   │   └── NotificationDropdown.tsx
+│   │   ├── hooks/                      # Hooks personalizados
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useNotifications.ts
+│   │   │   └── useAulas.ts
+│   │   ├── types/                      # Definições de tipos TypeScript
+│   │   └── styles/                     # Estilos CSS
+│   ├── tailwind.config.js
+│   └── package.json
+├── .gitignore
+└── README.md
 ```
-## **Pré-requisitos**
-Antes de começar, é fundamental garantir que todas as ferramentas requeridas estejam instaladas. Abaixo, a lista de tecnologias necessárias:
-### Ferramentas Necessárias
+
+## 🔧 Pré-requisitos
+
+Certifique-se de ter as seguintes ferramentas instaladas:
+
 - **Java 21 ou superior** (JDK)
-- **Gradle** (Gerenciador de dependências para o backend)
-- **Node.js** (versão 22 ou superior)
-- **npm** (gerenciador de pacotes Node.js)
-- **IDE**: IntelliJ IDEA ou VS Code
+- **Gradle 8.0+**
+- **Node.js 18.0+**
+- **npm ou yarn**
+- **Git**
 
-## **Configuração do Ambiente de Desenvolvimento**
+## 🚀 Instalação e Configuração
 
-### Passo 1: Clonando o Repositório
+### 1. Clone o Repositório
 
-``` bash
-git clone <url_do_repositorio>
-cd <nome_do_projeto>
+```bash
+git clone <url-do-repositorio>
+cd sistema-agendamento-aulas
 ```
 
-### Passo 2: Configurando o Backend (Spring Boot)
-1. **Abra a pasta `backend` no IntelliJ IDEA ou na sua IDE favorita.**
-2. Certifique-se de que o arquivo `application.properties` contenha informações atualizadas sobre banco de dados, portas, etc. Será necessário configurar:
-    - **Hibernate** para a persistência de dados.
-    - **JPA** para operações no banco de dados.
-    - Uma biblioteca de segurança como **Spring Security**, se aplicável.
+### 2. Configuração do Backend
 
-3. Execute o seguinte comando para assegurar que todas as dependências sejam baixadas:
-``` bash
-   ./gradlew build
-```
-1. Inicie o servidor backend com:
-``` bash
-   ./gradlew bootRun
-```
-Por padrão, a API será exposta na porta `http://localhost:8080`.
+```bash
+cd backend
 
-### Passo 3: Configurando o Frontend (Next.js)
-1. 
-2. **Abra a pasta `frontend` no seu editor de texto favorito, como VS Code.**
-2. Instale as dependências necessárias:
-``` bash
-   npm install
-```
-1. Execute o servidor frontend:
-``` bash
-   npm run dev
-```
-O frontend estará disponível em `http://localhost:3000` por padrão.
+# Instalar dependências e compilar
+./gradlew build
 
-## **Referências**
-- [Documentação Oficial do Spring Boot](https://spring.io/projects/spring-boot)
-- [Documentação do Next.js](https://nextjs.org/docs)
+# Executar o servidor backend
+./gradlew bootRun
+```
 
-Com isso, o modelo está pronto para sua evolução. 🚀 Se houver dúvidas, consulte a documentação ou entre em contato com seu instrutor, ou a equipe!
+O backend estará disponível em `http://localhost:8080`
+
+### 3. Configuração do Frontend
+
+```bash
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Executar o servidor de desenvolvimento
+npm run dev
+```
+
+O frontend estará disponível em `http://localhost:3000`
+
+## 🎯 Como Usar
+
+### Primeiro Acesso
+
+1. **Cadastre-se** como aluno ou professor em `/register`
+2. **Faça login** em `/login`
+3. **Complete seu perfil** (especialmente professores devem configurar matérias e valores)
+
+### Para Alunos
+
+1. Acesse o **Dashboard** para ver a visão geral
+2. Vá para **Professores** para ver todos os professores disponíveis
+3. **Agende uma aula** clicando no professor desejado
+4. Acompanhe suas aulas em **Minhas Aulas**
+5. Receba **notificações** sobre confirmações e atualizações
+
+### Para Professores
+
+1. Configure seu **perfil profissional** em Configurações
+2. Visualize **aulas agendadas** pelos alunos
+3. Receba **notificações** sobre novos agendamentos
+4. Gerencie sua **disponibilidade**
+
+## 🔐 Autenticação
+
+O sistema utiliza JWT (JSON Web Tokens) para autenticação:
+
+- **Tokens** são armazenados no localStorage do navegador
+- **Autorização** baseada em roles (ALUNO/PROFESSOR)
+- **Middleware** de autenticação em todas as rotas protegidas
+- **Expiração automática** dos tokens por segurança
+
+## 📊 API Endpoints
+
+### Usuários
+- `POST /api/usuarios/register` - Cadastro de usuário
+- `POST /api/usuarios/login` - Login de usuário
+- `GET /api/usuarios/profile` - Perfil do usuário logado
+
+### Professores
+- `GET /api/professores` - Listar professores
+- `PUT /api/professores/{id}` - Atualizar perfil do professor
+
+### Aulas
+- `POST /api/aulas` - Agendar aula
+- `GET /api/aulas/aluno` - Aulas do aluno
+- `GET /api/aulas/professor` - Aulas do professor
+- `DELETE /api/aulas/{id}` - Cancelar aula
+
+### Notificações
+- `GET /api/notificacoes` - Listar notificações
+- `GET /api/notificacoes/count` - Contar não lidas
+- `PUT /api/notificacoes/{id}/lida` - Marcar como lida
+
+## 🎨 Interface e Design
+
+- **Design Responsivo**: Funciona perfeitamente em desktop e mobile
+- **Componentes Reutilizáveis**: Arquitetura modular com componentes React
+- **Feedback Visual**: Loading states, notificações toast e validações em tempo real
+- **Acessibilidade**: Implementada seguindo boas práticas de UX/UI
+
+## 🔄 Fluxo de Dados
+
+1. **Autenticação**: Login → Token JWT → Armazenamento local
+2. **Agendamento**: Aluno seleciona professor → Preenche dados → API cria aula → Notificação enviada
+3. **Notificações**: Sistema cria notificação → Frontend busca periodicamente → Atualiza contador
+4. **Tempo Real**: Hooks personalizados mantêm dados sincronizados
+
+## 🧪 Testes
+
+```bash
+# Backend
+cd backend
+./gradlew test
+
+# Frontend
+cd frontend
+npm run test
+```
+
+## 🚀 Deploy
+
+### Backend
+```bash
+./gradlew build
+java -jar build/libs/backend-0.0.1-SNAPSHOT.jar
+```
+
+### Frontend
+```bash
+npm run build
+npm start
+```
+
+## 📝 Próximas Funcionalidades
+
+- [ ] Sistema de avaliações de professores
+- [ ] Calendário visual para agendamentos
+- [ ] Integração com sistemas de pagamento
+- [ ] Chat em tempo real entre aluno e professor
+- [ ] Relatórios e analytics
+- [ ] Notificações push
