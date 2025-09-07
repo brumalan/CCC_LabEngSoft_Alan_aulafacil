@@ -241,3 +241,104 @@ npm start
 - [ ] Chat em tempo real entre aluno e professor
 - [ ] Relatórios e analytics
 - [ ] Notificações push
+
+# TESTES -------------------------------------------------------------
+
+# Testes Unitários no Backend
+
+Este projeto inclui testes unitários para garantir a qualidade e o correto funcionamento da lógica de negócio na camada de serviço do backend. Utilizamos as seguintes tecnologias para a suíte de testes:
+
+* **JUnit 5:** O framework padrão para a escrita de testes em Java e no ecossistema Spring Boot.
+* **Mockito:** Uma biblioteca para a criação de "mocks" (objetos dublês), que nos permite testar uma classe de forma isolada, simulando o comportamento de suas dependências (como o repositório).
+
+## O Que é Testado: `UsuarioServiceTest.java`
+
+O principal arquivo de teste implementado é o `UsuarioServiceTest.java`, que foca em validar os métodos da classe `UsuarioService`. Atualmente, cobrimos os seguintes cenários para o método `atualizar`:
+
+### 1. `deveAtualizarUsuarioComSucesso()`
+Este teste valida o "caminho feliz", ou seja, o cenário em que a atualização de um usuário ocorre como esperado.
+
+* **O que ele faz:**
+    1.  **Prepara (Arrange):** Cria um objeto `Usuario` que simula um usuário já existente no banco de dados e um segundo objeto com os novos dados para a atualização.
+    2.  **Simula (Arrange):** Usando o Mockito, instruímos o `UsuarioRepository` falso a retornar o usuário existente quando o método `findById()` for chamado.
+    3.  **Executa (Act):** Chama o método `usuarioService.atualizar()`.
+    4.  **Verifica (Assert):** Confere se o usuário retornado pelo serviço contém as informações novas (nome, email e senha) e se os métodos `findById()` e `save()` do repositório foram chamados exatamente uma vez.
+
+### 2. `deveLancarExcecaoAoTentarAtualizarUsuarioInexistente()`
+Este teste garante que a aplicação se comporte de maneira segura e previsível ao tentar atualizar um usuário que não existe no banco de dados.
+
+* **O que ele faz:**
+    1.  **Prepara e Simula (Arrange):** Configuramos o mock do `UsuarioRepository` para retornar um resultado vazio (`Optional.empty()`) ao tentar buscar um usuário com um ID específico (ex: 99L).
+    2.  **Executa e Verifica (Act & Assert):** Tentamos chamar o método `usuarioService.atualizar()` com o ID inexistente e verificamos se ele lança a exceção esperada (`RuntimeException`).
+    3.  **Verifica (Assert):** Confirmamos também que a mensagem de erro está correta e que o método `save()` do repositório **nunca** foi chamado, evitando operações indevidas no banco de dados.
+
+## Como a Estrutura do Teste Funciona
+
+Os testes seguem o padrão **Arrange, Act, Assert (AAA)**, que organiza o código de forma clara e legível:
+
+* **`@Mock`**: Anotação do Mockito que cria uma versão falsa de uma dependência (ex: `UsuarioRepository`).
+* **`@InjectMocks`**: Cria uma instância real da classe que queremos testar (ex: `UsuarioService`) e injeta automaticamente os `mocks` criados.
+* **`when(...).thenReturn(...)`**: Função do Mockito que nos permite "programar" o comportamento do mock. Por exemplo: "**Quando** o método `findById` for chamado com o ID 1, **então retorne** nosso usuário de teste".
+
+## Como Executar os Testes
+
+Existem duas maneiras principais de executar os testes deste projeto:
+
+### 1. Pela IDE (IntelliJ IDEA)
+
+A forma mais simples durante o desenvolvimento.
+
+1.  Navegue até o arquivo de teste: `src/test/java/com/example/backend/service/UsuarioServiceTest.java`.
+2.  Clique no ícone de "play" (▶️) que aparece ao lado do nome da classe para rodar todos os testes do arquivo, ou ao lado de um método específico para rodar apenas aquele teste.
+3.  Os resultados serão exibidos em um painel na parte inferior da IDE.
+á compilar o código, executar todos os testes unitários e informar se a construção foi bem-sucedida (`BUILD SUCCESSFUL`). Um relatório detalhado em HTML será gerado em `backend/build/reports/tests/test/index.html`.
+
+## Testes de Integração no Backend
+
+Além dos testes unitários, o projeto também possui testes de integração. O objetivo principal é verificar se as diferentes camadas da aplicação (Controllers, Services, Repositories) funcionam corretamente em conjunto e se a aplicação consegue se conectar com sucesso a serviços externos, como o banco de dados PostgreSQL.
+
+### Visão Geral
+
+O principal teste de integração é o `DatabaseConnectionTest.java`. Sua função é servir como um "teste de saúde" (health check) fundamental para a aplicação, garantindo que:
+1.  O contexto do Spring Boot consegue ser inicializado sem erros.
+2.  A aplicação consegue se conectar ao banco de dados PostgreSQL usando as configurações fornecidas.
+3.  A camada de persistência (JPA/Hibernate) está funcional e consegue se comunicar com os repositórios.
+
+### O Teste `DatabaseConnectionTest.java`
+
+Este teste foi criado para ser uma verificação simples e direta da conexão com o banco de dados.
+
+* **O que ele faz:**
+  1.  **Carrega a Aplicação:** A anotação `@SpringBootTest` instrui o Spring a carregar o contexto completo da aplicação, lendo o arquivo `application.properties` e criando todos os beans necessários (assim como na aplicação real).
+  2.  **Injeta o Repositório:** A anotação `@Autowired` pede ao Spring para injetar uma instância funcional do `UsuarioRepository`. Para que isso funcione, o Spring obrigatoriamente precisa ter se conectado ao PostgreSQL e configurado toda a camada de persistência.
+  3.  **Verifica a Injeção:** O teste `assertNotNull(usuarioRepository)` confirma que o repositório foi injetado com sucesso. Se este passo falhar, significa que houve um erro ao iniciar a aplicação ou conectar ao banco.
+  4.  **Executa uma Consulta Real:** Como uma verificação final, o teste executa `usuarioRepository.count()`, que realiza uma consulta `SELECT COUNT(*)` real no banco de dados, provando que a comunicação está 100% funcional.
+
+## Como Executar o Teste
+
+Para executar este teste, é necessário um pré-requisito fundamental.
+
+### **Pré-requisito Indispensável**
+
+O servidor do banco de dados **PostgreSQL deve estar rodando e acessível** no endereço configurado em `src/main/resources/application.properties` (por padrão, `localhost:5432`).
+
+### 1. Pela IDE (IntelliJ IDEA)
+
+1.  Navegue até o arquivo de teste: `src/test/java/com/example/backend/DatabaseConnectionTest.java`.
+2.  Clique no ícone de "play" (▶️) ao lado do nome da classe `DatabaseConnectionTest` para executá-lo.
+3.  Os resultados serão exibidos no painel de testes da IDE.
+O terminal exibirá a mensagem `BUILD SUCCESSFUL` se o teste passar.
+
+# TESTE DE SISTEMA
+
+Passo 1: Você inicia seu frontend e seu backend.
+
+Passo 2: Abre o navegador no seu site (http://localhost:3000).
+
+Passo 3: Você clica na página de cadastro, preenche os campos (nome, email, senha) e clica em "Cadastrar".
+
+Passo 4: Você observa o resultado. Foi redirecionado para a página de login? Apareceu uma mensagem de sucesso?
+
+Passo 5: Você tenta fazer login com os dados que acabou de cadastrar.
+
+Passo 6: Deu certo? Você entrou na área logada do sistema?
